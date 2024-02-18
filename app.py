@@ -106,16 +106,6 @@ def planinha_atualizada():
 
             wb_copia.save('Planilha Atualizada.xlsx')
 
-        # except IndexError as error:
-        #     os.system('cls')
-        #     print('Erro:')
-        #     print(f'A planilha {arquivo_xlsx} não tem uma ou mais colunas com os dados necessários.')
-        #     print('\nSão elas: Coluna 1 | Coluna 15 | Coluna 25')
-        #     print('Verifique se as mesmas existem')
-        #     print('\nObs: a planilha do sistema MK-AUTH vem com as colunas corretas, veja se a mesma está na pasta.')
-        #     input('\nPresioner ENTER para fechar.')
-        #     sys.exit()
-
 
         except KeyError:
             os.system('cls')
@@ -255,11 +245,9 @@ def mensagem_automatica():
 
 Olá {nome.title()} seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
-Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
+Pix : xxx.xxx.xxx | Nome: xxxx
 
-Conta para depósito: 
-
-Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
+Conta para depósito: xxxxxx
 
 *Não se esqueça de nos enviar o comprovante!*
 
@@ -388,11 +376,9 @@ def reenviar_mensagem():
 
 Olá {nome.title()} seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
-Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
+Pix : xxx.xxx.xxx | Nome: xxxx
 
-Conta para depósito: 
-
-Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
+Conta para depósito: xxxxxx
 
 *Não se esqueça de nos enviar o comprovante!*
 
