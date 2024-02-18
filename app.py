@@ -335,7 +335,6 @@ def reenviar_mensagem():
     chrome_options.add_experimental_option("detach", True)
     servico = Service(ChromeDriverManager().install())
 
-    navegador = webdriver.Chrome(service=servico, options=chrome_options)
 
 
 
@@ -344,6 +343,7 @@ def reenviar_mensagem():
 
     # Extrai todos os dados da planilha cópia para o envio das mensagens
     for index, linha in enumerate(pagina_clientes.iter_rows(min_row=2)):
+        navegador = webdriver.Chrome(service=servico, options=chrome_options)
 
         nome = linha[0].value
         telefone = linha[1].value
