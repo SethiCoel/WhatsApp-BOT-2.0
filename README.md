@@ -50,4 +50,5 @@ Agora está tudo pronto para iniciar o BOT.</p>
 <h2>Tecnologias</h2>
 <div>
   <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54">
+        Selenium | Openpyxl
 </div>
