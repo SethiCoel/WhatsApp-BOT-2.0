@@ -203,7 +203,7 @@ def mensagem_automatica():
 
     chrome_options.add_experimental_option("detach", True)
     servico = Service(ChromeDriverManager().install())
-
+    
 
 
     workbook = openpyxl.load_workbook('Planilha Atualizada.xlsx')
@@ -211,7 +211,7 @@ def mensagem_automatica():
 
     # Extrai todos os dados da planilha cópia para o envio das mensagens
     for linha in pagina_clientes.iter_rows(min_row=2):
-        navegador = webdriver.Chrome(service=servico, options=chrome_options)
+        
 
         nome = linha[0].value
         telefone = linha[1].value
@@ -226,7 +226,7 @@ def mensagem_automatica():
             if data_antecipada.days == data_atual:
 
                 # Caso o número seja vazio ele é alertado e registrado na planilha "Planilha de Reenvio"
-                if telefone is None or telefone == '':
+                if telefone is None or telefone == '' or telefone == 'None':
                     
                     print(f'Não foi possível enviar a mensagem para {nome} | (Sem Número)')
 
@@ -252,7 +252,7 @@ def mensagem_automatica():
                 # Mensagem de exemplo que os clientes receberá contendo o nome e o vencimento. Sendo possível a troca a mensagem para a que mais agradar
                 mensagem = f'''*Mensagem Automática:*
 
-Olá {nome.title()} seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
+Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
 Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
 
@@ -264,10 +264,11 @@ Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
 
 Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                 try:
+                    navegador = webdriver.Chrome(service=servico, options=chrome_options)
                     navegador.get(f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}')
 
                     #Da ate 30 segundos para o botão ficar disponível
-                    botao_enviar = WebDriverWait(navegador, 60).until(
+                    botao_enviar = WebDriverWait(navegador, 30).until(
                         EC.element_to_be_clickable((By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button/span'))
                     )
 
@@ -278,7 +279,7 @@ Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
 
 
                 except Exception as error:
-                    print(f'Não foi possível enviar a mensagem para {nome} | (Número Inválido) {error}')
+                    print(f'Não foi possível enviar a mensagem para {nome} | (Número Inválido)')
                     
                     workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
                     sheet = workbook.active
@@ -296,6 +297,7 @@ Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                         sheet.cell(row=linha, column=col, value=dado)
                     
                     workbook.save('Não Enviados/Planilha de Reenvio.xlsx')
+                    continue
 
                 finally:
                     sleep(1.5)
@@ -342,7 +344,7 @@ def reenviar_mensagem():
 
     # Extrai todos os dados da planilha cópia para o envio das mensagens
     for index, linha in enumerate(pagina_clientes.iter_rows(min_row=2)):
-        navegador = webdriver.Chrome(service=servico, options=chrome_options)
+        
 
         nome = linha[0].value
         telefone = linha[1].value
@@ -357,7 +359,7 @@ def reenviar_mensagem():
             if data_antecipada.days == data_atual:
 
                 # Caso o número seja vazio ele é alertado e registrado na planilha "Planilha de Reenvio"
-                if telefone is None or telefone == '':
+                if telefone is None or telefone == '' or telefone == 'None':
                     
                     print(f'Não foi possível enviar a mensagem para {nome} | (Sem Número)')
 
@@ -385,7 +387,7 @@ def reenviar_mensagem():
                 # Mensagem de exemplo que os clientes receberá contendo o nome e o vencimento. Sendo possível a troca a mensagem para a que mais agradar
                 mensagem = f'''*Mensagem Automática:*
 
-Olá {nome.title()} seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
+Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
 Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
 
@@ -397,6 +399,7 @@ Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
 
 Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                 try:
+                    navegador = webdriver.Chrome(service=servico, options=chrome_options)
                     navegador.get(f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}')
 
                     #Da ate 30 segundos para o botão ficar disponível
