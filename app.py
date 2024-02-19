@@ -254,11 +254,9 @@ def mensagem_automatica():
 
 Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
-Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
+Pix : xxx.xxx.xxx.xx
 
-Conta para depósito: 
-
-Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
+Conta para depósito: xxx.xxxx.xxxx
 
 *Não se esqueça de nos enviar o comprovante!*
 
@@ -389,12 +387,9 @@ def reenviar_mensagem():
 
 Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
-Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
+Pix: xxx.xxx.xxx.xxx
 
-Conta para depósito: 
-
-Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
-
+Conta para depósito: xxx.xxx.xxx.xxx
 *Não se esqueça de nos enviar o comprovante!*
 
 Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
