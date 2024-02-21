@@ -133,9 +133,7 @@ def planinha_atualizada():
         input('\nPressione ENTER para fechar.')
         sys.exit()
 
-
-def menu():
-    
+def planilha_de_reenvio():
     pasta = Path('Não Enviados')
     if not pasta.exists():
         pasta.mkdir()
@@ -151,7 +149,9 @@ def menu():
         ws.column_dimensions['C'].width = 15
 
         wb.save('Não Enviados/Planilha de Reenvio.xlsx')
-    
+
+
+def menu():
     while True:
         os.system('cls')
         print('''WhatsApp Bot de Mensagem Automática
@@ -185,6 +185,8 @@ def menu():
 
 
 def mensagem_automatica():
+    send_list = []
+    notsend_list = []
 
     current_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -227,8 +229,9 @@ def mensagem_automatica():
 
                 # Caso o número seja vazio ele é alertado e registrado na planilha "Planilha de Reenvio"
                 if telefone is None or telefone == '' or telefone == 'None':
+                    planilha_de_reenvio()
                     
-                    print(f'Não foi possível enviar a mensagem para {nome} | (Sem Número)')
+                    notsend_list.append(f'Não foi possível enviar a mensagem para {nome}| (Sem Número)')
 
                     workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
                     sheet = workbook.active
@@ -254,11 +257,13 @@ def mensagem_automatica():
 
 Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
-Pix : xxx.xxx.xxx.xx
+Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
 
-Conta para depósito: xxx.xxxx.xxxx
+Conta para depósito: 
 
-*Não se esqueça de nos enviar o comprovante!*
+Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
+
+Não se esqueça de nos enviar o comprovante!
 
 Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                 try:
@@ -271,13 +276,13 @@ Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                     )
 
                     botao_enviar.click()
-
-                    # sleep(1.5)
-                    # navegador.close()
+                    send_list.append(f'Mensagem enviada com sucesso para {nome}')
+                    
 
 
                 except Exception as error:
-                    print(f'Não foi possível enviar a mensagem para {nome} | (Número Inválido)')
+                    planilha_de_reenvio()
+                    notsend_list.append(f'Não foi possível enviar a mensagem para {nome}| (Número Inválido)')
                     
                     workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
                     sheet = workbook.active
@@ -295,7 +300,7 @@ Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                         sheet.cell(row=linha, column=col, value=dado)
                     
                     workbook.save('Não Enviados/Planilha de Reenvio.xlsx')
-                    continue
+                    
 
                 finally:
                     sleep(1.5)
@@ -308,14 +313,33 @@ Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
     if dia_por_extenso == 'domingo':
         sleep(2)
         os.system("shutdown /s /t 1")
+    
+    os.system('cls')
+    print('Clientes com êxito:')
+    for pessoas in send_list:
+        print(f'\n{pessoas}')
+    
+    print('\n\n')
 
-    print('\nMensagens enviadas com sucesso!')
-    input('Pressione ENTER para voltar')
+    print('Clientes sem êxito:')
+    for pessoas in notsend_list:
+        print(f'\n{pessoas}')
+
+    input('\nPressione ENTER para voltar')
     menu()
 
 
 def reenviar_mensagem():
-    
+    pasta = Path('Não Enviados')
+    if not pasta.exists():
+        os.system('cls')
+        print('Não tem mensagem a ser enviada no momento.')
+        input('Presione ENTER para voltar')
+        main()
+
+    send_list = []
+    notsend_list = []
+
     current_directory = os.path.dirname(os.path.abspath(__file__))
 
     session_data_directory = os.path.join(current_directory, "session_data")
@@ -336,50 +360,35 @@ def reenviar_mensagem():
 
 
 
-
-    workbook = openpyxl.load_workbook('Planilha Atualizada.xlsx')
+    workbook = openpyxl.load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
     pagina_clientes = workbook['Sheet']
 
+    delete_rows = []
+    
     # Extrai todos os dados da planilha cópia para o envio das mensagens
-    for index, linha in enumerate(pagina_clientes.iter_rows(min_row=2)):
+    for index, linha in enumerate(pagina_clientes.iter_rows(min_row=1)):
         
 
         nome = linha[0].value
         telefone = linha[1].value
         vencimento = linha[2].value
-
+        
         if vencimento is not None:
             
             data_antecipada = timedelta(days=int(vencimento)) - timedelta(days=1)        
             data_atual = datetime.now().day
 
-                    # Faz a verificação da data, caso seja um dia antes do vencimento ele enviará a mensagem, senão irá ignorar
+            # Faz a verificação da data, caso seja um dia antes do vencimento ele enviará a mensagem, senão irá ignorar
             if data_antecipada.days == data_atual:
 
-                # Caso o número seja vazio ele é alertado e registrado na planilha "Planilha de Reenvio"
-                if telefone is None or telefone == '' or telefone == 'None':
-                    
-                    print(f'Não foi possível enviar a mensagem para {nome} | (Sem Número)')
-
-                    workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
-                    sheet = workbook.active
-                    
-                    sheet.delete_rows(index)
-
-                    linha = 1
-                    coluna = 1
-                    
-                    while sheet.cell(row=linha, column=coluna).value is not None:
-                        linha += 1
-
-                    # if sheet.cell(row=linha, column=coluna).value is None:
-                    dados = [f'{nome}', 'Sem Número', f'{vencimento}']
-                    
-                    for col, dado in enumerate(dados, start=1):
+                if telefone != 'Número Inválido' and telefone != 'Sem Número' and telefone is not None:
+                    delete_rows.append(index + 1)
                 
-                        sheet.cell(row=linha, column=col, value=dado)
+                # Caso o número seja vazio ele é alertado e registrado na planilha "Planilha de Reenvio"
+                if telefone == 'Número Inválido' or telefone == 'Sem Número' or telefone is None:
                     
-                    workbook.save('Não Enviados/Planilha de Reenvio.xlsx')
+                    notsend_list.append(f'Não foi possível enviar a mensagem para {nome}| ({telefone})')
+
                     continue
 
                 # Mensagem de exemplo que os clientes receberá contendo o nome e o vencimento. Sendo possível a troca a mensagem para a que mais agradar
@@ -387,10 +396,13 @@ def reenviar_mensagem():
 
 Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
 
-Pix: xxx.xxx.xxx.xxx
+Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
 
-Conta para depósito: xxx.xxx.xxx.xxx
-*Não se esqueça de nos enviar o comprovante!*
+Conta para depósito: 
+
+Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
+
+Não se esqueça de nos enviar o comprovante!
 
 Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
                 try:
@@ -404,42 +416,43 @@ Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
 
                     botao_enviar.click()
 
-                    workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
-                    
-                    sheet = workbook.active
-                    sheet.delete_rows(index)
-                    
-                    workbook.save('Não Enviados/Planilha de Reenvio.xlsx')
+                    send_list.append(f'Mensagem enviada com sucesso para {nome}')
 
-                    sleep(1.5)
-                    navegador.close()
+                    workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
+
+                    sheet = workbook.active
+                    
+                    for linha_para_excluir in reversed(delete_rows):
+                        sheet.delete_rows(linha_para_excluir)
+
+                    workbook.save('Não Enviados/Planilha de Reenvio.xlsx')
 
 
                 except Exception as error:
-                    os.system('cls')
-                    print(f'Não foi possível enviar a mensagem para {nome} | (Número Inválido)')
-                    
-                    workbook = load_workbook('Não Enviados/Planilha de Reenvio.xlsx')
-                    sheet = workbook.active
-                    
-                    linha = 1
-                    coluna = 1
-                    
-                    sheet.delete_rows(index)
 
-                    while sheet.cell(row=linha, column=coluna).value is not None:
-                        linha += 1
-
-                    dados = [f'{nome}', 'Número Inválido', f'{vencimento}']
+                    notsend_list.append(f'Não foi possível enviar a mensagem para {nome}| (Número Inválido)')
                     
-                    for col, dado in enumerate(dados, start=1):
-                
-                        sheet.cell(row=linha, column=col, value=dado)
-                    
-                    workbook.save('Não Enviados/Planilha de Reenvio.xlsx')
 
-        input('Pressione ENTER para voltar')
-        main()
+                finally:
+                    sleep(1.5)
+                    navegador.quit()
+    
+    os.system('cls')
+    print('Clientes com êxito:')
+    for pessoas in send_list:
+        print(f'\n{pessoas}')
+    
+    print('\n\n')
+
+    print('Clientes sem êxito:')
+    for pessoas in notsend_list:
+        print(f'\n{pessoas}')
+    
+    send_list = []
+    notsend_list = []
+    
+    input('\nPressione ENTER para voltar')
+    main()
 
 
 def domingo():

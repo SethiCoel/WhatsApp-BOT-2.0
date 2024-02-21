@@ -1,0 +1,11 @@
+Olá {nome.title()}, seu boleto vence dia {vencimento} (amanhã). Venha pagar presencialmente ou utilize nossos meios de pagamento:
+
+Pix CNPJ: 26.752.862/0001-64 | Plnalto Telecom
+
+Conta para depósito: 
+
+Caixa Econômica Federal : 3880 1288 000981858801-6 Marlene de Jesus Coelho
+
+Não se esqueça de nos enviar o comprovante!
+
+Caso o pagamento já tenha sido efetuado, desconsidere esta mensagem.'''
